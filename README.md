@@ -1,5 +1,5 @@
 # hpke
 
-An mplementation loosely based on draft-barnes-cfrg-hpke-01
+An implementation loosely based on draft-barnes-cfrg-hpke-01
 
 
