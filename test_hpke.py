@@ -176,7 +176,7 @@ class Test_Cipher_Suite(unittest.TestCase):
         print("-------------------------------------------------------")
 
 class Test_Vectors(unittest.TestCase):
-    def test_Vectors_Basic(self):
+    def xtest_Vectors_Basic(self):
         """ Generate basic test vectors. """
         print("\n-------------------------------------------------------")
         print("\nTest Vectors")
@@ -192,13 +192,13 @@ class Test_Vectors(unittest.TestCase):
             pt = b'testing 1234'
             ct = my_hpke.wrap( pt )
             print("Cipher Suite: {:s}".format( Cs.__name__ ))
-            print("csi: {}".format( Cs.csi ))
+            print("csi: {}".format( Cs.csi.hex() ))
             print("pkM: {}".format( my_key_pair.public_key_bytes.hex() ))
-            skM = my_key_pair.private_key.private_bytes(encoding=Encoding.DER, format=PrivateFormat.PKCS8, encryption_algorithm=NoEncryption())
-            print("skM: {}".format( skM ))
+            skM = my_key_pair.private_key.private_bytes(encoding=Encoding.PEM, format=PrivateFormat.PKCS8, encryption_algorithm=NoEncryption())
+            print("skM: \n{}".format( skM.decode('utf8') ))
             print("pkP: {}".format( peer_key_pair.public_key_bytes.hex() ))
-            print("skP: ...tbd")
-            print("pt: {}".format( pt ))
+            print("skP: \n{}".format(peer_key_pair.private_key.private_bytes(encoding=Encoding.PEM, format=PrivateFormat.PKCS8, encryption_algorithm=NoEncryption()).decode('utf8')))
+            print("pt: {}".format( pt.decode('utf8') ))
             print("ct: {}".format( ct.hex() ))
             print("-----------------------")
         print("-------------------------------------------------------")

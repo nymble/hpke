@@ -39,7 +39,7 @@ class Cipher_Suite:
 
     @classmethod
     def all_supported_suites(cls):
-        """ Retunr all supported cipher suites. """
+        """ Return all supported cipher suites. """
 
 
 class HPKE_Cipher_Suite(Cipher_Suite):
