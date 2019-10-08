@@ -47,7 +47,7 @@ class Persona:
 
 
 class Peer:
-    """ The state associated with a single peer persona. This is a form pf
+    """ The state associated with a single peer persona. This is a form of
         'security association' as it includes cryptographic state and other
         trusted attributions.
     """
