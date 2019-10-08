@@ -55,7 +55,7 @@ class Peer:
         """ Create a new association based on the cipher suite.
         """
         self.cipher_suite = cipher_suite
-        self.peer_key = cipher_suite.DH_Group.unmarshal(peer_key_bytes) # validates key
+        self.peer_key = cipher_suite.DH_Group.unmarshal(peer_key_bytes) # unpacks and validates key as required
         self.my_key_pair = my_key_pair
         self.name = name
         self.intro_context = intro_context
