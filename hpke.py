@@ -45,7 +45,7 @@ class HPKE:
     def __init__(self, cipher_suite, peer_key_bytes, my_key_pair=None, info=b'', salt=None):
         """ Set initial state of instance.
             'my_key_pair' is required for any unwrap operation, but may be None when using
-            the unauthenticate base mode 'MODE_BASE'.
+            the unauthenticated base mode 'MODE_BASE'.
         """
         self.cipher_suite = cipher_suite
         self.peer_key     = cipher_suite.DH_Group.unmarshal( peer_key_bytes ) # validates the key
