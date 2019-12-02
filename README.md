@@ -9,4 +9,6 @@ hpke.wrap and hpke.unwrap working, but need to complete:
  
  See test_hpke.py for usage examples...
 
+Should update to: https://tools.ietf.org/id/draft-irtf-cfrg-hpke-02.txt
+
 
