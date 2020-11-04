@@ -17,14 +17,14 @@ class AEAD:
         """ Encrypt and authenticate plaintext "pt" with associated
             data "aad" using secret key "key" and nonce "nonce",
             yielding ciphertext and tag "ct"
-            """
+        """
         return self.aead.encrypt(nonce, pt, aad)
     
     def open(self, nonce, aad, ct):
         """ Decrypt ciphertext "ct" using associated data "aad" with
             secret key "key" and nonce "nonce", returning plaintext
             message "pt" or the error value "OpenError"
-            """
+        """
         return self.aead.decrypt(nonce, ct, aad)
     
     def __init__(self, key):
