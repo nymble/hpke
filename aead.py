@@ -1,6 +1,8 @@
 """ aead.py
     
-    Loosely based on draft-barnes-cfrg-hpke-01
+    Authenticated Encryption with Associated Data (AEAD) 
+    Wrapper for encryption algorithms to add key_length and other attributes for use in cipher suites. 
+    
 """
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305 as CHACHAPOLY
