@@ -63,8 +63,7 @@ class ECC_DH_Group(DH_Group):
     @classmethod
     def unmarshal(cls, public_key_bytes):
         """ Parse a fixed-length octet string to recover a public key. """
-        public_key_bytes = b'\x04' + public_key_bytes # prepend ANSI X9.16 type byte
-        
+        public_key_bytes = b'\x04' + public_key_bytes # prepend ANSI X9.16 type byte as required by library
         public_key = cls.PublicKey.from_encoded_point( cls.Curve(), public_key_bytes )
         return public_key
 
@@ -104,7 +103,6 @@ class X_DH_Group(DH_Group):
         """ Diffie-Hellman key exchange. """
         shared_key = key_pair.private_key.exchange(public_key)
         return shared_key
-
 
 
 class P_256(ECC_DH_Group):

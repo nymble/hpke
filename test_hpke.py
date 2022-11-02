@@ -4,12 +4,48 @@
 import os
 import unittest
 
+from persona import Persona
 from aead import supported_aead_algs
 from cipher_suite import supported_cipher_suites
-from persona import Persona
 from cryptography.hazmat.primitives.serialization import Encoding
 from cryptography.hazmat.primitives.serialization import PrivateFormat
 from cryptography.hazmat.primitives.serialization import NoEncryption
+
+
+class Test_Persona(unittest.TestCase):
+    """ Test Persona class.
+        """
+    def testPersonaBasic(self):
+        """ Basic usage tested for every cipher suite. """
+        for Cs in supported_cipher_suites:
+            
+            alice = Persona(Cs)
+            bob   = Persona(Cs)
+            carol = Persona(Cs)
+            
+            # simple key introduction of peers
+            alice.addPeer( bob.public_key_bytes, name='bob' )
+            alice.addPeer( carol.public_key_bytes, name='carol' )
+            
+            pt  = b'Testing encryption to peers'
+            ctb1  = alice.wrap('bob', pt)
+            ctb2  = alice.wrap('bob', pt)
+            
+            self.assertNotEqual( ctb1, ctb2 )  # each ephemerally encrypted
+            
+            bob.addPeer( alice.public_key_bytes, name='alice1' )
+            ptb1 = bob.unwrap( 'alice1', ctb1 )
+            ptb2 = bob.unwrap( 'alice1', ctb2 )
+            self.assertEqual( pt, ptb1 )
+            self.assertEqual( pt, ptb2 )
+            
+            # error case
+            bob.addPeer( alice.public_key_bytes, name='a' )
+            try:
+                pt3 = carol.unwrap( 'a', ct )         # should fail
+            # assert goes here ...
+            except:
+                pass
 
 
 class Test_AEAD(unittest.TestCase):
@@ -175,8 +211,9 @@ class Test_Cipher_Suite(unittest.TestCase):
             print("{:34s}  {:2d}        {:5d} ".format( Cs.__name__, Cs.AEAD.key_length, len(ct)-len(pt)))
         print("-------------------------------------------------------")
 
+
 class Test_Vectors(unittest.TestCase):
-    def xtest_Vectors_Basic(self):
+    def test_Vectors_Basic(self):
         """ Generate basic test vectors. """
         print("\n-------------------------------------------------------")
         print("\nTest Vectors")
@@ -192,53 +229,18 @@ class Test_Vectors(unittest.TestCase):
             pt = b'testing 1234'
             ct = my_hpke.wrap( pt )
             print("Cipher Suite: {:s}".format( Cs.__name__ ))
-            print("csi: {}".format( Cs.csi.hex() ))
+            print("csi: {}".format( Cs.csi ))
             print("pkM: {}".format( my_key_pair.public_key_bytes.hex() ))
-            skM = my_key_pair.private_key.private_bytes(encoding=Encoding.PEM, format=PrivateFormat.PKCS8, encryption_algorithm=NoEncryption())
-            print("skM: \n{}".format( skM.decode('utf8') ))
+            skM = my_key_pair.private_key.private_bytes(encoding=Encoding.DER, format=PrivateFormat.PKCS8, encryption_algorithm=NoEncryption())
+            print("skM: {}".format( skM ))
             print("pkP: {}".format( peer_key_pair.public_key_bytes.hex() ))
-            print("skP: \n{}".format(peer_key_pair.private_key.private_bytes(encoding=Encoding.PEM, format=PrivateFormat.PKCS8, encryption_algorithm=NoEncryption()).decode('utf8')))
-            print("pt: {}".format( pt.decode('utf8') ))
+            print("skP: ...tbd")
+            print("pt: {}".format( pt ))
             print("ct: {}".format( ct.hex() ))
             print("-----------------------")
         print("-------------------------------------------------------")
 
-class Test_Persona(unittest.TestCase):
-    """ Test Persona class.
-    """
-    def testPersonaBasic(self):
-        """ Basic usage tested for every cipher suite. """
-        for Cs in supported_cipher_suites:
-            
-            alice = Persona(Cs)
-            bob   = Persona(Cs)
-            carol = Persona(Cs)
-            
-            # simple key introduction of peers
-            alice.addPeer( bob.public_key_bytes, name='bob' )
-            alice.addPeer( carol.public_key_bytes, name='carol' )
-            
-            pt  = b'Testing encryption to peers'
-            ctb1  = alice.wrap('bob', pt)
-            ctb2  = alice.wrap('bob', pt)
-            
-            self.assertNotEqual( ctb1, ctb2 )  # each ephemerally encrypted
 
-            bob.addPeer( alice.public_key_bytes, name='alice1' )
-            ptb1 = bob.unwrap( 'alice1', ctb1 )
-            ptb2 = bob.unwrap( 'alice1', ctb2 )
-            self.assertEqual( pt, ptb1 )
-            self.assertEqual( pt, ptb2 )
-
-            # error case
-            bob.addPeer( alice.public_key_bytes, name='a' )
-            try:
-                pt3 = carol.unwrap( 'a', ct )         # should fail
-                # assert goes here ... 
-            except:
-                pass
-
-                                                                          
 # Make this test module runnable from the command prompt
 if __name__ == "__main__":
     unittest.main()

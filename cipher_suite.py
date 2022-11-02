@@ -39,7 +39,7 @@ class Cipher_Suite:
 
     @classmethod
     def all_supported_suites(cls):
-        """ Return all supported cipher suites. """
+        """ Retunr all supported cipher suites. """
 
 
 class HPKE_Cipher_Suite(Cipher_Suite):
@@ -60,6 +60,7 @@ class HPKE_P256_AES_GCM_128(HPKE_Cipher_Suite):
     Hash = SHA256
     AEAD = AES_GCM_128
     KDF = HKDF(Hash)
+    name = 'P1'          # NIST 128 bit compatible
 
 
 class HPKE_P256_ChaCha20Poly1305(HPKE_Cipher_Suite):

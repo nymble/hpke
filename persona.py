@@ -18,7 +18,7 @@ class Persona:
         self.peers = {}   # peers indexed by public key
         
         # add self to known keys
-        self.addPeer(self.key_pair.public_key_bytes, name='self', intro_context=b'' )
+        self.addPeer(self.key_pair.public_key_bytes, name='self', intro_context=b'self' )
 
     def wrap(self, peer_name, plain_text, aad=None, auth=True):
         """ Use HPKE to protect data to peer by 'name' """
@@ -55,10 +55,11 @@ class Peer:
         """ Create a new association based on the cipher suite.
         """
         self.cipher_suite = cipher_suite
-        self.peer_key = cipher_suite.DH_Group.unmarshal(peer_key_bytes) # unpacks and validates key as required
+        self.peer_key = cipher_suite.DH_Group.unmarshal(peer_key_bytes) # validates key
         self.my_key_pair = my_key_pair
         self.name = name
         self.intro_context = intro_context
 
-        # a new instance of HPKE protocol
+        # create a new instance of HPKE protocol
         self.hpke = cipher_suite.HPKE( cipher_suite, peer_key_bytes, my_key_pair=my_key_pair, info=intro_context )
+
