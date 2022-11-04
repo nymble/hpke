@@ -1,0 +1,93 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+package persona;
+
+// Local representation of public key based identities for wallet storage.
+message Persona {
+  Keys keys = 1; // The keys have a cipher_suite that etermines the algoruthms and application context
+  bytes uid = 4; // representing the Persona based on Keys and associated cipher_suite
+  string uid_string =5; // A user friendly version of the uid, created from uid and ciphersuite
+  string local_name = 6;  // locally unique name for identity, 1-to-32 chars. SDSI/SPKI-like usage
+  google.protobuf.Timestamp date_created = 7;
+  repeated Peer peers = 8; // other personas identified by public key
+  Attributes attributes = 9; // information bound to the identity
+}
+
+message Keys {         //  Used for wallet storage
+    CipherSuite cipher_suite = 1;
+    bytes signature_key = 2;        // private key, long term
+    bytes validation_key = 3;       // public key, long term idenity - required
+    bytes dh_key = 4;               // public dh key, may be ephemeral
+    bytes dh_key_private = 5;       //
+    bytes symmetric_secret_key = 6; // To support symmetric cipher suites, or as an identity 'salt'
+}
+
+enum CipherSuite { // ... may change to more opaque representation as bytes or int
+  NONE = 0;       // Default
+  ED25519 = 1;    // Ed25519 signature and MAC integrity only
+  NACL = 2;       // Ed25519, ephemeral DH (EDHoP) with Curve25519
+  NIST256 = 3;    // For ATECC608B support, NIST P256, ECDSA, ECDH, AES-SIV
+}
+
+message Peer { // Local representation of a peer persona and assciated cryptographic state
+  Keys keys = 1;  // Typically only public keys or private keysfor symmetric only cipher suites
+  bytes uid = 4; // representing the Persona based on Keys and associated cipher_suite
+  string uid_string =5; // A user friendly version of the uid, created from uid and ciphersuite
+  string local_name = 6;  // locally unique name for peer, 1-to-32 chars. SDSI/SPKI-like usage
+  google.protobuf.Timestamp date_introduced = 7;
+  Attributes attributes = 9; // information bound to the identity
+}
+
+message Attributes {
+    MeshtasticUser meshtastic_node   = 1; // LoRa node
+    MeshtasticUser meshtastic_client = 2; // User client, typically bound to node by USB or BT
+}
+
+message Wallet {  // currently only protected by OS. To do: passphrase encrypted
+  repeated Persona personas = 1;
+}
+
+// later import the messages below .............................................
+message MeshtasticUser {      // temporary inclusion for testing/development
+  string id = 1; // global ...
+  string long_name = 2; 
+  string short_name = 3; // 2 or 3 chars
+  bytes macaddr = 4; 
+  MeshtasticHardwareModel hw_model = 5;
+  bool is_licensed = 6; // User is a licensed radio operator
+}
+
+enum MeshtasticHardwareModel { // !!! temporary inclusion for testing/development
+  UNSET = 0;
+  TLORA_V2 = 1;
+  TLORA_V1 = 2;
+  TLORA_V2_1_1P6 = 3;
+  TBEAM = 4;
+  HELTEC_V2_0 = 5;
+  TBEAM_V0P7 = 6;
+  T_ECHO = 7;
+  TLORA_V1_1P3 = 8;
+  RAK4631 = 9;
+  HELTEC_V2_1 = 10;
+  HELTEC_V1 = 11;
+  LILYGO_TBEAM_S3_CORE = 12;
+  RAK11200 = 13;
+  NANO_G1 = 14;
+  STATION_G1 = 25;
+  LORA_RELAY_V1 = 32;
+  NRF52840DK = 33;
+  PPR = 34;
+  GENIEBLOCKS = 35;
+  NRF52_UNKNOWN = 36;
+  PORTDUINO = 37;
+  ANDROID_SIM = 38;
+  DIY_V1 = 39;
+  NRF52840_PCA10059 = 40;
+  DR_DEV = 41;
+  M5STACK = 42;
+  PRIVATE_HW = 255;
+}
+
+
+
+
